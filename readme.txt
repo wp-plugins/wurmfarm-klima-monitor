@@ -7,11 +7,11 @@ Stable tag: 1.0.0
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Dieses Plugin ermöglich die Darstellung von Temperatur, Luftfeuchtigkeit, Luftdruck, Bodenfeuchtigkeit.
+Dieses Plugin ermöglicht die Darstellung von Temperatur, Luftfeuchtigkeit, Luftdruck, Bodenfeuchtigkeit.
 
 == Description ==
 
-Dieses Plugin ermöglich die Darstellung von Temperatur, Luftfeuchtigkeit, Luftdruck, Bodenfeuchtigkeit, welche mit Sensoren am GrovePi+ gemessen und mit RaspberryPi verarbeitet wurden.
+Dieses Plugin ermöglicht die Darstellung von Temperatur, Luftfeuchtigkeit, Luftdruck, Bodenfeuchtigkeit, welche mit Sensoren am GrovePi+ gemessen und mit RaspberryPi verarbeitet wurden.
 Es liest aus der Wordpress Datenbank die Daten und zeigt diese in einem Liniendiagramm an.  
 
 == Installation ==

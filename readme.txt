@@ -25,6 +25,7 @@ Es liest aus der Wordpress Datenbank die Daten und zeigt diese in einem Liniendi
 4. Ändere den erzeugten Code nach Deinen Wünschen ab
 
 Einstellmöglichkeiten:
+
 title 	- Definition des Titels 
 		  z.B.: title="Dies ist ein Titel"
 chart 	- Definition der Anzeige, "temp" oder "press" 

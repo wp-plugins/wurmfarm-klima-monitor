@@ -46,7 +46,9 @@ Meine eMail Adresse lautet: info@2komma5.org
 
 == Screenshots ==
 
-1. Liniendiagramm
+Temperatur_Woche
+
+Luftdruck_Woche
 
 == Changelog ==
 

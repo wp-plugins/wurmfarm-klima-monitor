@@ -16,7 +16,8 @@ Es liest aus der Wordpress Datenbank die Daten und zeigt diese in einem Liniendi
 == Installation ==
 
 1. Installiere das Plugin in */wp-content/plugins Verzeichnis
-2. Aktiviere das Plugin im "Plugin" Menü von Wordpress, es wird automatisch eine neue Tabelle *_climadata angelegt. (* = Wordpress prefix
+2. Aktiviere das Plugin im "Plugin" Menü von Wordpress, es wird automatisch eine neue Tabelle xxx_climadata angelegt. 
+	(xxx = Wordpress prefix
 3. Durch drücken der Wurm-Icone (auf Seiten und Beiträgen), wird ein Shortcode für ein Liniendiagramm erzeugt:
    [ws_chart title="Heute" chart="temp" day="Today" v_title="Temperatur" width="800px" height="400px" ]
    

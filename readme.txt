@@ -7,7 +7,7 @@ Stable tag: 1.0.0
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Dieses Plugin zeigt Sensordaten einer Wurmfarm. 
+Dieses Plugin ermöglich die Darstellung von Temperatur, Luftfeuchtigkeit, Luftdruck, Bodenfeuchtigkeit, welche mit Sensoren am GrovePi+ gemessen und mit RaspberryPi verarbeitet wurden.
 
 == Description ==
 
@@ -28,7 +28,8 @@ Es liest aus der Wordpress Datenbank die Daten und zeigt diese in einem Liniendi
 
 = Was benötige ich für dieses Plugin? =
 
-Du benötigst einen Raspberry Pi, ein GrovePi+ Shield, Temperatur-, Luftdruck- und Bodenfeuchtigkeistsensor.
+Du benötigst einen Raspberry Pi, ein GrovePi+ Shield, Temperatur-, Luftdruck- und Bodenfeuchtigkeitssensor.
+Ebenso benötigst Du das Coding, mit welchem die Daten in die Datenbank geschrieben werden.
 Für mehr Informationen, besuche bitte die Projektseite http://www.2komma5.org 
 
 = An wen kann ich mich wenden, wenn ich Fragen habe? =

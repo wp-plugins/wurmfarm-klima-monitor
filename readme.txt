@@ -46,7 +46,9 @@ Meine eMail Adresse lautet: info@2komma5.org
 
 == Screenshots ==
 
-Temperatur_Woche
+1. Wochenübersicht Temperatur
+
+2. Wochenübersicht Luftdruck
 
 Luftdruck_Woche
 

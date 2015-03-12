@@ -21,7 +21,6 @@ Es liest aus der Wordpress Datenbank die Daten und zeigt diese in einem Liniendi
 	(xxx = Wordpress prefix
 3. Durch drücken der Wurm-Icone (auf Seiten und Beiträgen), wird ein Shortcode für ein Liniendiagramm erzeugt:
    [ws_chart title="Heute" chart="temp" day="Today" v_title="Temperatur" width="800px" height="400px" ]
-   
 4. Ändere den erzeugten Code nach Deinen Wünschen ab
 
 		
@@ -37,8 +36,7 @@ Für mehr Informationen, besuche bitte die Projektseite http://www.2komma5.org
 Meine eMail Adresse lautet: info@2komma5.org
 
 == Screenshots ==
-1. Wochenübersicht Temperatur
-2. Wochenübersicht Luftdruck
+
 
 == Changelog ==
 
@@ -46,7 +44,6 @@ Meine eMail Adresse lautet: info@2komma5.org
 * Initial release
 
 == Arbitrary section ==
-
 Einstellmöglichkeiten:
 
 title   - Definition des Titels z.B.: title="Dies ist ein Titel"

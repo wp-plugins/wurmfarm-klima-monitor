@@ -24,15 +24,6 @@ Es liest aus der Wordpress Datenbank die Daten und zeigt diese in einem Liniendi
    
 4. Ändere den erzeugten Code nach Deinen Wünschen ab
 
-Einstellmöglichkeiten:
-
-title 	- Definition des Titels 
-		  z.B.: title="Dies ist ein Titel"
-chart 	- Definition der Anzeige, "temp" oder "press" 
-		  z.B.: char="temp" Anzeige der Temperatur
-day   	- Definition des Anzeigebereichs, "Today", "Yesterday", "Week", "Month", "Year" 
-		  z.B.: day="Week" Anzeige der Daten der letzten 7 Tage
-v_title - Definition der y-Achsen Beschriftung
 		
 == Frequently Asked Questions ==
 
@@ -46,14 +37,23 @@ Für mehr Informationen, besuche bitte die Projektseite http://www.2komma5.org
 Meine eMail Adresse lautet: info@2komma5.org
 
 == Screenshots ==
-
 1. Wochenübersicht Temperatur
-
 2. Wochenübersicht Luftdruck
-
-Luftdruck_Woche
 
 == Changelog ==
 
 = 1.0.0 =
 * Initial release
+
+== Arbitrary section ==
+
+Einstellmöglichkeiten:
+
+title   - Definition des Titels z.B.: title="Dies ist ein Titel"
+
+chart 	- Definition der Anzeige, "temp" oder "press" z.B.: char="temp" 
+
+day   	- Definition des Anzeigebereichs, "Today", "Yesterday", "Week", "Month", "Year" 
+          z.B.: day="Week" Anzeige der Daten der letzten 7 Tage
+
+v_title - Definition der y-Achsen Beschriftung

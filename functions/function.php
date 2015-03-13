@@ -50,7 +50,7 @@ function ws_setting_section_callback_function()
 
 function ws_setting_callback_function()
 {
-    echo '<input name="ws_db_delete" id="ws_db_delete" type="checkbox" value="1" class="code" ' . checked(1, get_option('ws_db_delete'), false) . ' /> Beim Deaktivieren des Plugin, wird die Tabelle gelöscht!';
+    echo '<input name="ws_db_delete" id="ws_db_delete" type="checkbox" value="1" class="code" ' . checked(1, get_option('ws_db_delete'), false) . ' /> Beim Deaktivieren des Plugin wird die Tabelle gelöscht!';
 }
 
 

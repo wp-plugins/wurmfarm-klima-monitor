@@ -65,9 +65,13 @@ Meine eMail Adresse lautet: info@2komma5.org
 title   - Definition des Titels z.B.: title="Dies ist ein Titel"
 
 chart 	- Definition der Anzeige, "temp" , "temphum, "hum" oder "press" z.B.: char="temp"
+
 			temp    - zeigt nur die Temperaturen
+			
 			temphum - zeigt Temperatur und Luftfeuchte
+			
 			hum     - zeigt nur die Luftfeuchte
+			
 			press   - zeigt den Luftdruck	  
 
 day   	- Definition des Anzeigebereichs, "Today", "Yesterday", "Week", "Month", "Year" 

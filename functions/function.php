@@ -4,10 +4,15 @@ global $wpdb;
 global $ws_db_version;
 $ws_db_version = '1.0';
 global $ws_plugin_version;
-$ws_plugin_version = '1.1.0';
-global $ws_table_name;
+$ws_plugin_version = '1.2.0';
+// Store the IDs of the generated graphs
+global $graphs_id;
+// Store the IDs of the generated graphs
+$graphs_id = array();
 //setup of table name
 global $ws_table_name;
+
+// set tablename
 $tablename        = 'ws_climadata';
 //make it convertable for blog switching
 //$wpdb->tables[]   = $tablename;
@@ -15,47 +20,39 @@ $tablename        = 'ws_climadata';
 $wpdb->$tablename = $wpdb->prefix . $tablename;
 $ws_table_name    = $wpdb->$tablename;
 
- // ------------------------------------------------------------------
- // Add all your sections, fields and settings during admin_init
- // ------------------------------------------------------------------
- //
- 
- function ws_settings_api_init() {
- 	// Add the section to general settings
- 	add_settings_section(
-		'ws_setting_section',
-		'Einstellungen des Plugin: Wurmfarm Klima Monitor',
-		'ws_setting_section_callback_function',
-		'general'
-	);
- 	
- 	// Add the field with the names and function to use for settings
- 	add_settings_field(
-		'ws_db_delete',
-		'Datenbanktabelle löschen',
-		'ws_setting_callback_function',
-		'general',
-		'ws_setting_section'
-	);
- 	
- 	register_setting( 'general', 'ws_db_delete' );
- } 
- 
+// ------------------------------------------------------------------
+// Add all your sections, fields and settings during admin_init
+// ------------------------------------------------------------------
+//
+
+function ws_settings_api_init()
+{
+    // Add the section to general settings
+    add_settings_section('ws_setting_section', 'Einstellungen des Plugin: Wurmfarm Klima Monitor', 'ws_setting_section_callback_function', 'general');
     
- function ws_setting_section_callback_function() {
-	global $ws_table_name;
-	global $ws_db_version;
-	global $ws_plugin_version;
- 	echo '<p>Datenbanktabelle:          ' . $ws_table_name . '</p>';
-	echo '<p>Datenbanktabellen Version: ' . $ws_db_version . '</p>';
-	echo '<p>Plugin Version:            ' . $ws_plugin_version . '</p>';
-	
-	}
-  
- function ws_setting_callback_function() {
- 	echo '<input name="ws_db_delete" id="ws_db_delete" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'ws_db_delete' ), false ) . ' /> Beim Deaktivieren des Plugin, wird die Tabelle gelöscht!';
- }
-  
+    // Add the field with the names and function to use for settings
+    add_settings_field('ws_db_delete', 'Datenbanktabelle löschen', 'ws_setting_callback_function', 'general', 'ws_setting_section');
+    
+    register_setting('general', 'ws_db_delete');
+}
+
+
+function ws_setting_section_callback_function()
+{
+    global $ws_table_name;
+    global $ws_db_version;
+    global $ws_plugin_version;
+    echo '<p>Datenbanktabelle:          ' . $ws_table_name . '</p>';
+    echo '<p>Datenbanktabellen Version: ' . $ws_db_version . '</p>';
+    echo '<p>Plugin Version:            ' . $ws_plugin_version . '</p>';
+    
+}
+
+function ws_setting_callback_function()
+{
+    echo '<input name="ws_db_delete" id="ws_db_delete" type="checkbox" value="1" class="code" ' . checked(1, get_option('ws_db_delete'), false) . ' /> Beim Deaktivieren des Plugin, wird die Tabelle gelöscht!';
+}
+
 
 function ws_wormstation_add_button($buttons)
 {
@@ -65,7 +62,7 @@ function ws_wormstation_add_button($buttons)
 
 function ws_wormstation_register($plugin_array)
 {
-    $url = plugins_url( 'editor_plugin.js', __FILE__ );
+    $url                         = plugins_url('editor_plugin.js', __FILE__);
     $plugin_array['wormstation'] = $url;
     return $plugin_array;
 }
@@ -95,7 +92,7 @@ function ws_create_plugin_table()
     dbDelta($sql);
     add_option('ws_db_version', $ws_db_version);
     add_option('ws_plugin_version', $ws_plugin_version);
-
+    
 }
 // delete db Table 
 function ws_delete_plugin_table()
@@ -103,13 +100,13 @@ function ws_delete_plugin_table()
     
     global $wpdb;
     global $ws_table_name;
-    if ( 1 == get_option( 'ws_db_delete' )) {
-    //Delete any options thats stored also
-    delete_option('ws_plugin_version');
-    delete_option('ws_db_version');
-	delete_option('ws_db_delete');
-    $wpdb->query("DROP TABLE IF EXISTS $ws_table_name");
-	}
+    if (1 == get_option('ws_db_delete')) {
+        //Delete any options thats stored also
+        delete_option('ws_plugin_version');
+        delete_option('ws_db_version');
+        delete_option('ws_db_delete');
+        $wpdb->query("DROP TABLE IF EXISTS $ws_table_name");
+    }
 }
 
 //Add JS loading to head
@@ -129,7 +126,6 @@ function ws_visualization_new_div($id, $width, $height)
 
 function ws_read_db($options)
 {
-    global $graphs_id;
     global $wpdb;
     global $ws_table_name;
     // get data from db
@@ -140,25 +136,25 @@ function ws_read_db($options)
     switch ($day_opt) {
         case "Today":
             $sql_where = "WHERE dateMeasured='" . $dateChosen . "'";
-		    break;
+            break;
         case "Yesterday":
             $sql_where = "WHERE dateMeasured='" . $dateChosen . "'";
-		    break;
+            break;
         case "Week":
             $dateToday   = date('Y-m-d');
             $dateWeekago = date('Y-m-d', mktime(0, 0, 0, date("m"), date("d") - 7, date("Y")));
             $sql_where   = "WHERE dateMeasured BETWEEN '" . $dateWeekago . "' and '" . $dateToday . "'";
-        	break;
+            break;
         case "Month":
             $actMonth  = date('m');
             $sql_where = "WHERE MONTH(dateMeasured) = '" . $actMonth . "'";
-        	break;
+            break;
         case "Year":
             $actYear   = date('Y');
             $sql_where = "WHERE YEAR(dateMeasured) = '" . $actYear . "'";
-        	break;
+            break;
     }
-    $sql = "SELECT * FROM " . $ws_table_name. " " . $sql_where;
+    $sql       = "SELECT * FROM " . $ws_table_name . " " . $sql_where;
     # read data from db	
     $resultSet = $wpdb->get_results($sql, ARRAY_A);
     //echo $sql, "nr:", $wpdb->num_rows;
@@ -166,47 +162,46 @@ function ws_read_db($options)
 }
 function set_title($options)
 {
-    global $graphs_id;
     global $wpdb;
-    $month = array(1 => "Januar",
-                2 => "Februar",
-                3 => "März",
-                4 => "April",
-                5 => "Mai",
-                6 => "Juni",
-                7 => "Juli",
-                8 => "August",
-                9 => "September",
-                10 => "Oktober",
-                11 => "November",
-                12 => "Dezember");
-				
+    $month = array(
+        1 => "Januar",
+        2 => "Februar",
+        3 => "März",
+        4 => "April",
+        5 => "Mai",
+        6 => "Juni",
+        7 => "Juli",
+        8 => "August",
+        9 => "September",
+        10 => "Oktober",
+        11 => "November",
+        12 => "Dezember"
+    );
+    
     $day_opt    = esc_sql($options[day]);
     $dateChosen = date('Y-m-d', esc_sql(strtotime($day_opt)));
     switch ($day_opt) {
         case "Today":
-        	$options['title'] = $options['title'] . " - " . date('d.m.Y',strtotime($day_opt)); 
+            $options['title'] = $options['title'] . " - " . date('d.m.Y', strtotime($day_opt));
             break;
         case "Yesterday":
-        	$options['title'] = $options['title'] . " - " . date('d.m.Y',strtotime($day_opt)); 
+            $options['title'] = $options['title'] . " - " . date('d.m.Y', strtotime($day_opt));
             break;
         case "Week":
-            $dateToday   = date('Y-m-d');
-            $dateWeekago = date('Y-m-d', mktime(0, 0, 0, date("m"), date("d") - 7, date("Y")));
-            $options['title'] = $options['title'] . " - " . date('d.m.Y', strtotime($dateWeekago)) . " bis " . date('d.m.Y'); 
-			break;
+            $dateToday        = date('Y-m-d');
+            $dateWeekago      = date('Y-m-d', mktime(0, 0, 0, date("m"), date("d") - 7, date("Y")));
+            $options['title'] = $options['title'] . " - " . date('d.m.Y', strtotime($dateWeekago)) . " bis " . date('d.m.Y');
+            break;
         case "Month":
             $options['title'] = $options['title'] . " - " . $month[date("n")];
-			break;
+            break;
         case "Year":
-            $actYear   = date('Y');
+            $actYear          = date('Y');
             $options['title'] = $options['title'] . " - " . $actYear;
-			break;
+            break;
     }
     return $options;
 }
-// Store the IDs of the generated graphs
-$graphs_id = array();
 
 //Generate a line chart
 function ws_visualization_line_chart_shortcode($atts, $content = null)
@@ -214,7 +209,9 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
     //use global variables
     global $graphs_id;
     global $wpdb;
-	global $ws_table_name;
+    global $ws_table_name;
+    global $graphs_id;
+
     $ws_options = shortcode_atts(array(
         'width' => "400px",
         'height' => "300px",
@@ -256,12 +253,19 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
         if ('temp' == $chart) {
             $graph_draw_js .= 'data.addColumn("datetime","Zeit");';
             $graph_draw_js .= 'data.addColumn("number","Temperatur [C]");';
-            $graph_draw_js .= 'data.addColumn("number","Luftfeuchte [%]");';
             $graph_draw_js .= 'data.addColumn("number","Barometer Temp [C]");';
         } elseif ('press' == $chart) {
             $graph_draw_js .= 'data.addColumn("datetime","Zeit");';
             $graph_draw_js .= 'data.addColumn("number","Luftdruck [hPa]");';
             //$graph_draw_js .= 'data.addColumn("number","Höhe [m]");';
+        } elseif ('hum' == $chart) {
+            $graph_draw_js .= 'data.addColumn("datetime","Zeit");';
+            $graph_draw_js .= 'data.addColumn("number","Luftfeuchte [%]");';
+        } elseif ('temphum' == $chart) {
+            $graph_draw_js .= 'data.addColumn("datetime","Zeit");';
+            $graph_draw_js .= 'data.addColumn("number","Temperatur [C]");';
+            $graph_draw_js .= 'data.addColumn("number","Luftfeuchte [%]");';
+            $graph_draw_js .= 'data.addColumn("number","Barometer Temp [C]");';
         }
     }
     $day_opt = esc_sql($ws_options[day]);
@@ -276,54 +280,28 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
         $btemp        = $row['btemp'];
         $pressure     = $row['pressure'];
         $altitude     = $row['altitude'];
-        if ('temp' == $chart) {
-            switch ($day_opt) {
-                case "Today":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $temperature . ',' . $hum . ',' . $btemp . ']';
-                    break;
-                case "Yesterday":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $temperature . ',' . $hum . ',' . $btemp . ']';
-                    break;
-                case "Week":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $temperature . ',' . $hum . ',' . $btemp . ']';
-                    break;
-                case "Month":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $temperature . ',' . $hum . ',' . $btemp . ']';
-                    break;
-                case "Year":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $temperature . ',' . $hum . ',' . $btemp . ']';
-                    break;
-            }
-        } elseif ('press' == $chart) {
-            switch ($day_opt) {
-                case "Today":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $pressure . ']'; //',' . $altitude . ']';
-                    break;
-                case "Yesterday":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $pressure . ']'; //',' . $altitude . ']';
-                    $altitude . ']';
-                    break;
-                case "Week":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $pressure . ']'; //',' . $altitude . ']';
-                    $altitude . ']';
-                    break;
-                case "Month":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $pressure . ']'; //',' . $altitude . ']';
-                    $altitude . ']';
-                    break;
-                case "Year":
-                    $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $pressure . ']'; //',' . $altitude . ']';
-                    $altitude . ']';
-                    break;
-            }
-            
+        
+        switch ($chart) {
+            case "temp";
+                $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $temperature . ',' . $btemp . ']';
+                break;
+            case "temphum";
+                $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $temperature . ',' . $hum . ',' . $btemp . ']';
+                break;
+            case "hum";
+                $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $hum . ']';
+                break;
+            case "press";
+                $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $pressure . ']'; //',' . $altitude . ']';
+                break;
         }
+        
         $i = $i + 1;
         if ($i <> ($wpdb->num_rows)) {
             $graph_draw_js .= ',';
         }
     }
-	$ws_options = set_title($ws_options);
+    $ws_options = set_title($ws_options);
     $graph_draw_js .= ']);';
     //Create the options
     $graph_draw_js .= 'var options = {';
@@ -343,12 +321,14 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
         $graph_draw_js .= 'hAxis: {title: "' . $ws_options['h_title'] . '", slantedText:true},';
     
     if (!empty($ws_options['v_title'])) {
-        if ('temp' == $chart) {
-		    $sql = "SELECT temperature FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY temperature ASC LIMIT 1";
+        if (('temp' == $chart) or ('temphum' == $chart)) {
+            $sql = "SELECT temperature FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY temperature ASC LIMIT 1";
+        } elseif ('hum' == $chart) {
+            $sql = "SELECT humidity FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY humidity ASC LIMIT 1";
         } elseif ('press' == $chart) {
-			$sql = "SELECT pressure FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY pressure ASC LIMIT 1";
+            $sql = "SELECT pressure FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY pressure ASC LIMIT 1";
         }
-		$resultSet = $wpdb->get_results($sql);
+        $resultSet = $wpdb->get_results($sql);
         //echo $sql;  
         $graph_draw_js .= 'vAxis: {title: "' . $ws_options['v_title'] . '", viewWindow: {min:".$resultSet."}}';
     } else
@@ -397,54 +377,64 @@ function ws_visualization_load_graphs_js($content)
 }
 
 //save debug setting from UI
-function ws_save_setting() {
+function ws_save_setting()
+{
     if (isset($_POST['debugsetting']) && !empty($_POST['debugsetting'])) {
         $error_reporting = isset($_POST['error_reporting']) ? trim($_POST['error_reporting']) : '0';
-        $error_log = isset($_POST['error_log']) ? trim($_POST['error_log']) : '0';
-        $display_error = isset($_POST['display_error']) ? trim($_POST['display_error']) : '0';
-        $error_script = isset($_POST['error_script']) ? trim($_POST['error_script']) : '0';
+        $error_log       = isset($_POST['error_log']) ? trim($_POST['error_log']) : '0';
+        $display_error   = isset($_POST['display_error']) ? trim($_POST['display_error']) : '0';
+        $error_script    = isset($_POST['error_script']) ? trim($_POST['error_script']) : '0';
         $error_savequery = isset($_POST['error_savequery']) ? trim($_POST['error_savequery']) : '0';
-        $fileName = 'wp-config.php';
-        $fileContent = debug_file_read($fileName);
+        $fileName        = 'wp-config.php';
+        $fileContent     = debug_file_read($fileName);
         
         $fileContent = debug_add_option($error_reporting, 'WP_DEBUG', $fileContent);
         $fileContent = debug_add_option($error_log, 'WP_DEBUG_LOG', $fileContent);
         $fileContent = debug_add_option($display_error, 'WP_DEBUG_DISPLAY', $fileContent);
         $fileContent = debug_add_option($error_script, 'SCRIPT_DEBUG', $fileContent);
         $fileContent = debug_add_option($error_savequery, 'SAVEQUERIES', $fileContent);
-
-        if (debug_file_write($fileContent, $fileName)) {?>
+        
+        if (debug_file_write($fileContent, $fileName)) {
+?>
             <script>
-                window.location = '<?php echo admin_url('admin.php?page=debug&update=1'); ?>';
+                window.location = '<?php
+            echo admin_url('admin.php?page=debug&update=1');
+?>';
             </script>
             <?php
         } else {
             echo '<div class="error settings-error">';
-            echo '<p><strong>'.__('Your wp-config file not updated. Copy and paste following code in your wp-config.php file.','debug').'</strong></p>';
+            echo '<p><strong>' . __('Your wp-config file not updated. Copy and paste following code in your wp-config.php file.', 'debug') . '</strong></p>';
             echo '</div>';
-            echo '<textarea style="width:100%; height:400px">'.htmlentities($fileContent).'</textarea>';
+            echo '<textarea style="width:100%; height:400px">' . htmlentities($fileContent) . '</textarea>';
         }
         die;
     }
     if (isset($_GET['update']) && $_GET['update'] == 1) {
-        ?>
+?>
         <div class="updated settings-error"> 
-            <p><strong><?php _e('wp-config.php file update successfully.','debug');?></strong></p>
+            <p><strong><?php
+        _e('wp-config.php file update successfully.', 'debug');
+?></strong></p>
         </div>
         <?php
     }
 }
 //add thank you link on admin pages
-function ws_footer_link(){
+function ws_footer_link()
+{
     $output = '<div class="alignright">';
     $output .= 'Danke, dass Sie den Wurmfarm Klima Monitor nutzen  ';
     $output .= '<a href="http://www.2komma5.org" target="_blank">';
     $output .= 'Stefan Mayer';
     $output .= '</a>';
-    $output .= '</div>';?>
+    $output .= '</div>';
+?>
     <script>
         jQuery(document).ready(function(){
-            jQuery('#footer-thankyou').html('<?php echo $output;?>');
+            jQuery('#footer-thankyou').html('<?php
+    echo $output;
+?>');
             jQuery('#footer-upgrade').html('Current Version 1.1.0');
         });
     </script>

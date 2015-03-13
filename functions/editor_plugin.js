@@ -1,5 +1,5 @@
 function wormstation() {
-    return "[ws_chart title=\"Wurmfarm Station Temperatur\" chart=\"temp\" day=\"Today\" v_title=\"Temperatur\" width=\"800px\" height=\"400px\" ] [ws_chart title=\"Wurmfarm Station Luftdruck\" chart=\"press\" day=\"Today\" v_title=\"Luftdruck\" width=\"800px\" height=\"400px\" ] ";
+    return "[ws_chart title=\"Wurmfarm Station Temperatur\" chart=\"temp\" day=\"Today\" v_title=\"Temperatur\" width=\"800px\" height=\"400px\" ] ";
 }
 
 (function() {
@@ -26,7 +26,7 @@ function wormstation() {
                 author : 'Stefan Mayer',
                 authorurl : 'http://www.2komma5.org',
                 infourl : '',
-                version : "1.1.0"
+                version : "1.2.0"
             };
         }
     });

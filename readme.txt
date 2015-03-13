@@ -1,9 +1,9 @@
-=== Wurmfarm Klima Monitor ===
+﻿=== Wurmfarm Klima Monitor ===
 Tags: Raspberry Pi, GrovePi+, Wurmfarm, Temperatur, Luftfeuchtigkeit, Luftdruck, Bodenfeuchtigkeit
 Contributors: mayerst
 Requires at least: 3.0.1
 Tested up to: 4.1.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,11 +54,21 @@ Meine eMail Adresse lautet: info@2komma5.org
 * Anzeige der Datenbanktabellen-Version, Datenbanktabellen-Name und Plugin Version im Bereich Einstellungen-Allgemein
 * Bessere Strukturierung des Codings
 
+
+= 1.2.0 =
+* mehr Optionen zur Chart Anzeige, siehe Einstellmöglichkeiten
+* kleinere Fehler
+
+
 == Einstellmöglichkeiten ==
 
 title   - Definition des Titels z.B.: title="Dies ist ein Titel"
 
-chart 	- Definition der Anzeige, "temp" oder "press" z.B.: char="temp" 
+chart 	- Definition der Anzeige, "temp" , "temphum, "hum" oder "press" z.B.: char="temp"
+			temp    - zeigt nur die Temperaturen
+			temphum - zeigt Temperatur und Luftfeuchte
+			hum     - zeigt nur die Luftfeuchte
+			press   - zeigt den Luftdruck	  
 
 day   	- Definition des Anzeigebereichs, "Today", "Yesterday", "Week", "Month", "Year" 
           z.B.: day="Week" Anzeige der Daten der letzten 7 Tage

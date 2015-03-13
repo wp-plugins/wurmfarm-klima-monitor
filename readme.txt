@@ -42,6 +42,8 @@ Meine eMail Adresse lautet: info@2komma5.org
 
 2. Wochenübersicht des Luftdrucks
 
+3. Einstellungen
+
 == Changelog ==
 
 = 1.0.0 =

@@ -56,7 +56,7 @@ Meine eMail Adresse lautet: info@2komma5.org
 
 
 = 1.2.0 =
-* mehr Optionen zur Chart Anzeige
+* mehr Optionen zur Chart Anzeige, siehe Einstellmöglichkeiten
 * kleinere Fehler
 
 

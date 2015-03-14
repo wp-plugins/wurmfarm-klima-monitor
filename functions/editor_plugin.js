@@ -1,5 +1,5 @@
 function wormstation() {
-    return "[ws_chart title=\"Wurmfarm Station Temperatur\" chart=\"temp\" day=\"Today\" v_title=\"Temperatur\" width=\"800px\" height=\"400px\" ] ";
+    return "[ws_chart title=\"Wurmfarm Station Temperatur\" chart=\"temp\" trendline=\"no\" day=\"Today\" v_title=\"Temperatur\" width=\"800px\" height=\"400px\" ] ";
 }
 
 (function() {

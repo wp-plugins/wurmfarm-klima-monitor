@@ -50,7 +50,7 @@ function ws_setting_section_callback_function()
 
 function ws_setting_callback_function()
 {
-    echo '<input name="ws_db_delete" id="ws_db_delete" type="checkbox" value="1" class="code" ' . checked(1, get_option('ws_db_delete'), false) . ' /> Beim Deaktivieren des Plugin wird die Tabelle gelöscht!';
+    echo '<input name="ws_db_delete" id="ws_db_delete" type="checkbox" value="1" class="code" ' . checked(1, get_option('ws_db_delete'), false) . ' /> Beim Deaktivieren des Plugin, wird die Tabelle gelöscht!';
 }
 
 
@@ -218,6 +218,7 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
         'title' => "Graphx",
         'chart' => "Temp",
         'day' => "Today",
+		'trendline' => "no",
         'display' => "Temperatur",
         'scale' => "Celsius",
         'h_title' => "",
@@ -247,6 +248,7 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
     //Create the graph
     $graph_draw_js .= 'var data = new google.visualization.DataTable();';
     $chart = esc_sql($ws_options[chart]);
+	$trendline = esc_sql($ws_options[trendline]);
     if (0 == ($wpdb->num_rows)) {
         echo "no data in database";
     } else {
@@ -312,6 +314,18 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
     $graph_draw_js .= 'height:\'' . $ws_options['height'] . '\',';
     $graph_draw_js .= 'legend:\'bottom\',';
     $graph_draw_js .= 'backgroundColor: "transparent",';
+	if ( 'yes' == $trendline ) {
+		$graph_draw_js .= 'trendlines: {
+							0: {
+								type: "polynomial",
+								color: "green",
+								lineWidth: 1,
+								opacity: 0.3,
+								showR2: true,
+								visibleInLegend: false
+							}
+						},';
+	}
     //if ($chart == 'press')
     // {
     //   $graph_draw_js .= 'series: { 0: {targetAxisIndex: 0}, 1: {targetAxisIndex: 1}},';

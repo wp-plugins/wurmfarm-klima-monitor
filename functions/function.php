@@ -4,7 +4,7 @@ global $wpdb;
 global $ws_db_version;
 $ws_db_version = '1.0';
 global $ws_plugin_version;
-$ws_plugin_version = '1.2.0';
+$ws_plugin_version = '1.2.2';
 // Store the IDs of the generated graphs
 global $graphs_id;
 // Store the IDs of the generated graphs
@@ -160,7 +160,7 @@ function ws_read_db($options)
     //echo $sql, "nr:", $wpdb->num_rows;
     return $resultSet;
 }
-function ws_set_title($options)
+function ws_set_title($options,$pressure)
 {
     global $wpdb;
     $month = array(
@@ -200,6 +200,22 @@ function ws_set_title($options)
             $options['title'] = $options['title'] . " - " . $actYear;
             break;
     }
+	$chart = esc_sql($options[chart]);
+	
+	if ("press" == $chart) {
+		if ($pressure <= 980) {
+			$options['title'] .= " - stürmisch - Unwetter";
+		} elseif ($pressure > 980 and $pressure <= 1000) {
+			$options['title'] .= " - regnerisch - Tief";
+		} elseif ($pressure > 1000 and $pressure <= 1020){
+			$options['title'] .= " - wechselhaft - normal";
+		} elseif ($pressure > 1020 and $pressure <= 1040) {
+			$options['title'] .= " - sonnig - Hoch";
+		}  elseif ($pressure > 1040) {
+			$options['title'] .= " - trocken - Hoch";
+		}
+	}
+	
     return $options;
 }
 
@@ -303,7 +319,7 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
             $graph_draw_js .= ',';
         }
     }
-    $ws_options = ws_set_title($ws_options);
+    $ws_options = ws_set_title($ws_options,$pressure);
     $graph_draw_js .= ']);';
     //Create the options
     $graph_draw_js .= 'var options = {';
@@ -332,8 +348,7 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
     //   $graph_draw_js .= 'vAxes: { 0: {title: "Luftdruck"}, 1: {title: "Höhe"}},';
     // }
     if (!empty($ws_options['h_title']))
-        $graph_draw_js .= 'hAxis: {title: "' . $ws_options['h_title'] . '", slantedText:true},';
-    
+		$graph_draw_js .= 'hAxis: {title: "' . $ws_options['h_title'] . '", slantedText:true},';
     if (!empty($ws_options['v_title'])) {
         if (('temp' == $chart) or ('temphum' == $chart)) {
             $sql = "SELECT temperature FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY temperature ASC LIMIT 1";
@@ -345,9 +360,9 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
         $resultSet = $wpdb->get_results($sql);
         //echo $sql;  
         $graph_draw_js .= 'vAxis: {title: "' . $ws_options['v_title'] . '", viewWindow: {min:".$resultSet."}}';
-    } else
+		} else
         $graph_draw_js .= 'vAxis: {viewWindow: {min:-2}}';
-    
+     	
     
     $graph_draw_js .= '};';
     //Populate the data

@@ -160,7 +160,7 @@ function ws_read_db($options)
     //echo $sql, "nr:", $wpdb->num_rows;
     return $resultSet;
 }
-function set_title($options)
+function ws_set_title($options)
 {
     global $wpdb;
     $month = array(
@@ -303,7 +303,7 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
             $graph_draw_js .= ',';
         }
     }
-    $ws_options = set_title($ws_options);
+    $ws_options = ws_set_title($ws_options);
     $graph_draw_js .= ']);';
     //Create the options
     $graph_draw_js .= 'var options = {';

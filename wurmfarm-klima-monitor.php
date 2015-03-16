@@ -9,7 +9,10 @@
  * License: GPL2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
-
+ 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+ 
 // function library file
 require_once 'functions/function.php';
 

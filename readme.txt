@@ -3,7 +3,7 @@ Tags: Raspberry Pi, GrovePi+, Wurmfarm, Temperatur, Luftfeuchtigkeit, Luftdruck,
 Contributors: mayerst
 Requires at least: 3.0.1
 Tested up to: 4.1.1
-Stable tag: 1.2.2
+Stable tag: 1.3.0
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,14 +66,20 @@ Meine eMail Adresse lautet: info@2komma5.org
 = 1.2.2 =
 * Der Titel des Luftruck-Charts zeigt die aktuelle Wetter Aussicht an
 
-
+= 1.3.0 =
+* Der Titel der Linien-Charts zeigt die aktuelle Wettervorhersage an (regnerisch, zeitweise Regen, wechselhaft, 
+  heiter und sonnig). Die Vorhersage, wird auf dem RaspberryPi errechnet und as Forecastin der Datenbank gespeichert.
+  Ebenso wird eine Strumwarnung ausgegeben.
+* Der Taupunkt wird nun ebenso errechnet und kann als Linien-Chart chart="dew" ausgegeben werden
+* Erweiterung der Datenbanktabelle, um die Felder: forecast und dewPoint
+  
 == Einstellmöglichkeiten ==
 
 title   - Definition des Titels z.B.: title="Dies ist ein Titel"
 
 trendline - "yes" , "no"; default ist "no"
 
-chart 	- Definition der Anzeige, "temp" , "temphum, "hum" oder "press" z.B.: char="temp"
+chart 	- Definition der Anzeige, "temp" , "temphum, "hum", "press" oder "dew" z.B.: char="temp"
 
 			temp    - zeigt nur die Temperaturen
 			
@@ -81,7 +87,9 @@ chart 	- Definition der Anzeige, "temp" , "temphum, "hum" oder "press" z.B.: cha
 			
 			hum     - zeigt nur die Luftfeuchte
 			
-			press   - zeigt den Luftdruck	  
+			press   - zeigt den Luftdruck
+			
+			dew		- zeigt den Taupunkt
 
 day   	- Definition des Anzeigebereichs, "Today", "Yesterday", "Week", "Month", "Year" 
           z.B.: day="Week" Anzeige der Daten der letzten 7 Tage

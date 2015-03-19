@@ -2,9 +2,9 @@
 
 global $wpdb;
 global $ws_db_version;
-$ws_db_version = '1.0';
+$ws_db_version = '2.0';
 global $ws_plugin_version;
-$ws_plugin_version = '1.2.2';
+$ws_plugin_version = '1.3.0';
 // Store the IDs of the generated graphs
 global $graphs_id;
 // Store the IDs of the generated graphs
@@ -75,24 +75,42 @@ function ws_create_plugin_table()
     global $ws_table_name;
     
     $charset_collate = $wpdb->get_charset_collate();
-    
-    $sql = "CREATE TABLE " . $ws_table_name . "(
-		`id` int(255) NOT NULL AUTO_INCREMENT,
-		`temperature` double NOT NULL,
-		`humidity` varchar(20) NOT NULL,
-		`btemp` double NOT NULL,
-		`pressure` varchar(11) NOT NULL,
-		`altitude` double NOT NULL,
-		`moisture` varchar(20) NOT NULL,
-		`dateMeasured` date NOT NULL,
-		`timeStamp` datetime NOT NULL,
-		PRIMARY KEY (`id`)
-	) " . $charset_collate . ";";
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
-    add_option('ws_db_version', $ws_db_version);
-    add_option('ws_plugin_version', $ws_plugin_version);
-    
+
+	if ("1.0" == get_option( 'ws_db_version','1.0')) {
+	// upgrade db table
+		$sql = "ALTER TABLE " . $ws_table_name . " ADD `dewPoint` VARCHAR(20) NOT NULL AFTER `moisture`";
+		$wpdb->query($sql);
+		$sql = "ALTER TABLE " . $ws_table_name . " ADD `forecast` VARCHAR(30) NOT NULL AFTER `id`";
+		$wpdb->query($sql);
+		update_option('ws_db_version', $ws_db_version);
+	}
+    if ("null" == get_option( 'ws_db_version','null')) {
+	
+		$sql = "CREATE TABLE " . $ws_table_name . "(
+			`id` int(255) NOT NULL AUTO_INCREMENT,
+			`forecast` VARCHAR(30) NOT NULL,
+			`temperature` double NOT NULL,
+			`humidity` varchar(20) NOT NULL,
+			`btemp` double NOT NULL,
+			`pressure` varchar(11) NOT NULL,
+			`altitude` double NOT NULL,
+			`moisture` varchar(20) NOT NULL,
+			`dewPoint` VARCHAR(20) NOT NULL,
+			`dateMeasured` date NOT NULL,
+			`timeStamp` datetime NOT NULL,
+			PRIMARY KEY (`id`)
+		) " . $charset_collate . ";";
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		dbDelta($sql);
+		add_option('ws_db_version', $ws_db_version);
+		add_option('ws_plugin_version', $ws_plugin_version);
+    }
+	
+	if ('ws_plugin_version' != get_option( 'ws_plugin_version','1.0.0')) {
+		update_option('ws_plugin_version', $ws_plugin_version);
+	}
+	
+   	
 }
 // delete db Table 
 function ws_delete_plugin_table()
@@ -160,7 +178,7 @@ function ws_read_db($options)
     //echo $sql, "nr:", $wpdb->num_rows;
     return $resultSet;
 }
-function ws_set_title($options,$pressure)
+function ws_set_title($options,$forecast)
 {
     global $wpdb;
     $month = array(
@@ -200,23 +218,9 @@ function ws_set_title($options,$pressure)
             $options['title'] = $options['title'] . " - " . $actYear;
             break;
     }
-	$chart = esc_sql($options[chart]);
 	
-	if ("press" == $chart) {
-		if ($pressure <= 980) {
-			$options['title'] .= " - stürmisch - Unwetter";
-		} elseif ($pressure > 980 and $pressure <= 1000) {
-			$options['title'] .= " - regnerisch - Tief";
-		} elseif ($pressure > 1000 and $pressure <= 1020){
-			$options['title'] .= " - wechselhaft - normal";
-		} elseif ($pressure > 1020 and $pressure <= 1040) {
-			$options['title'] .= " - sonnig - Hoch";
-		}  elseif ($pressure > 1040) {
-			$options['title'] .= " - trocken - Hoch";
-		}
-	}
-	
-    return $options;
+	$options['title'].= " - " . $forecast;
+	return $options;
 }
 
 //Generate a line chart
@@ -284,13 +288,16 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
             $graph_draw_js .= 'data.addColumn("number","Temperatur [C]");';
             $graph_draw_js .= 'data.addColumn("number","Luftfeuchte [%]");';
             $graph_draw_js .= 'data.addColumn("number","Barometer Temp [C]");';
+        } elseif ('dew' == $chart) {
+            $graph_draw_js .= 'data.addColumn("datetime","Zeit");';
+            $graph_draw_js .= 'data.addColumn("number","Taupunkt [C]");';
         }
     }
     $day_opt = esc_sql($ws_options[day]);
     $graph_draw_js .= 'data.addRows([';
     $i = null;
     foreach ($resultSet as $row) {
-        //echo $row['temperature']+"\r\n<br>";
+        
         $dateMeasured = $row['dateMeasured'];
         $timeStamp    = $row['timeStamp'];
         $temperature  = $row['temperature'];
@@ -298,6 +305,8 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
         $btemp        = $row['btemp'];
         $pressure     = $row['pressure'];
         $altitude     = $row['altitude'];
+		$forecast     = $row['forecast'];
+		$dewPoint     = $row['dewPoint'];
         
         switch ($chart) {
             case "temp";
@@ -312,14 +321,17 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
             case "press";
                 $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $pressure . ']'; //',' . $altitude . ']';
                 break;
-        }
+			case "dew";
+                $graph_draw_js .= '[new Date("' . $timeStamp . '"),' . $dewPoint . ']'; 
+                break;
+		}
         
         $i = $i + 1;
         if ($i <> ($wpdb->num_rows)) {
             $graph_draw_js .= ',';
         }
     }
-    $ws_options = ws_set_title($ws_options,$pressure);
+    $ws_options = ws_set_title($ws_options,$forecast);
     $graph_draw_js .= ']);';
     //Create the options
     $graph_draw_js .= 'var options = {';
@@ -356,6 +368,8 @@ function ws_visualization_line_chart_shortcode($atts, $content = null)
             $sql = "SELECT humidity FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY humidity ASC LIMIT 1";
         } elseif ('press' == $chart) {
             $sql = "SELECT pressure FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY pressure ASC LIMIT 1";
+        } elseif ('dew' == $chart) {
+            $sql = "SELECT dewPoint FROM " . $ws_table_name . " WHERE dateMeasured='" . $dateChosen . "' ORDER BY dewPoint ASC LIMIT 1";
         }
         $resultSet = $wpdb->get_results($sql);
         //echo $sql;  

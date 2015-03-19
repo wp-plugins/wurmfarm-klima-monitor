@@ -26,7 +26,7 @@ function wormstation() {
                 author : 'Stefan Mayer',
                 authorurl : 'http://www.2komma5.org',
                 infourl : '',
-                version : "1.2.2"
+                version : "1.3.0"
             };
         }
     });

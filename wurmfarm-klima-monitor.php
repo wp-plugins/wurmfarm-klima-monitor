@@ -3,7 +3,7 @@
  * Plugin Name: Wurmfarm Klima Monitor
  * Plugin URI: www.2komma5.org
  * Description: Zeigt die Temperatur, Luftfeuchtigkeit, Luftdruck, Bodenfeuchtigkeit, welche mit RaspberryPi und GrovePi+ gemessen wurden.
- * Version: 1.2.2
+ * Version: 1.3.0
  * Author: Stefan Mayer
  * Author URI: http://www.2komma5.org
  * License: GPL2

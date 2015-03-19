@@ -219,7 +219,33 @@ function ws_set_title($options,$forecast)
             break;
     }
 	
-	$options['title'].= " - " . $forecast;
+	switch ($forecast) {
+		case "0":
+			$options['title'].= " - Regen";
+			break;
+		case "1":
+			$options['title'].= " - vereinzelt Regen";
+			break;
+		case "2":
+			$options['title'].= " - wechselhaft";
+			break;
+		case "3":
+			$options['title'].= " - bedeckt";
+			break;
+		case "4":
+			$options['title'].= " - bewölkt";
+			break;
+		case "5":
+			$options['title'].= " - heiter";
+			break;
+		case "6":
+			$options['title'].= " - sonnig";
+			break;
+		case "12":
+			$options['title'].= " - Gewitter";
+			break;
+	}
+
 	return $options;
 }
 
